@@ -15,21 +15,20 @@ const previousTripSchema = mongoose.Schema({
 });
 
 const userSchema = mongoose.Schema({
-    pseudo: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     profilePicture: { type: String, required: false },
     coverPicture: { type: String, required: false },
-    description: { type: String, required: true },
-    dreamTrips: { type: [String], default: undefined, required: true },
+    description: { type: String, required: false },
+    dreamTrips: { type: [String], default: undefined, required: false },
     previousTrips: [previousTripSchema],
     albums: [albumSchema],
-    firstName: { type: String, required: true },
-    lastName: { type: String, required: true },
+    firstname: { type: String, required: true },
+    lastname: { type: String, required: true },
     age: { type: String, required: true },
     gender: { type: String, required: true },
     country: { type: String, required: true },
-    origin: { type: String, required: true },
+    nationality: { type: String, required: true },
     followers: { type: [String], default: [] },
     following: { type: [String], default: [] },
 });

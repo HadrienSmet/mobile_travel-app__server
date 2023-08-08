@@ -42,25 +42,24 @@ const handleCoverPicture = (req, res) => {
 // --> Warning: bcrypt.hash is async function
 //If hash succes: -create a new Object to post to the database with the password hashed
 exports.signup = (req, res, next) => {
+    console.log("controllers/user.js l:45 - you arrived in the controller!");
     bcrypt
         .hash(req.body.password, 10)
         .then((hash) => {
             const user = new UserModel({
                 email: req.body.email,
                 password: hash,
-                pseudo: req.body.pseudo,
-                description: req.body.description,
-                dreamTrips: req.body.dreamTrips,
-                previousTrips: req.body.previousTrips,
-                firstName: req.body.firstName,
-                lastName: req.body.lastName,
+                firstname: req.body.firstname,
+                lastname: req.body.lastname,
                 age: req.body.age,
                 gender: req.body.gender,
                 country: req.body.country,
-                origin: req.body.origin,
+                nationality: req.body.nationality,
             });
+            console.log("controllers/user.js l:63 - user: " + user);
             user.save()
                 .then(() => {
+                    console.log("controllers/user.js l:66 - user is saved");
                     res.status(200).json({
                         userId: user._id,
                         token: jwt.sign(
