@@ -8,6 +8,7 @@ const userCtrl = require("../controllers/user");
 router.post("/signup", password, userCtrl.signup);
 router.post("/login", userCtrl.login);
 router.patch("/userProfile/:id", auth, multer, userCtrl.uploadUserPictures);
+router.patch("/patchProfile/:id", auth, multer, userCtrl.patchProfileData);
 router.put("/setAlbum/:userId", auth, multer, userCtrl.uploadAlbum);
 router.put("/setTrip/:userId", auth, userCtrl.addNewTrip);
 router.put("/followUser/:id", auth, userCtrl.followUser);

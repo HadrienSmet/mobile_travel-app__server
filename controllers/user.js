@@ -67,11 +67,66 @@ exports.signup = (req, res, next) => {
                             process.env.ACCESS_TOKEN_SECRET,
                             { expiresIn: "24h" }
                         ),
+                        email: req.body.email,
+                        firstname: user.firstname,
+                        lastname: user.lastname,
+                        age: user.age,
+                        gender: user.gender,
+                        country: user.country,
+                        nationality: user.nationality,
                     });
                 })
                 .catch((error) => res.status(400).json({ error }));
         })
         .catch((error) => res.status(500).json({ error }));
+};
+
+exports.patchProfileData = (req, res, next) => {
+    console.log("controllers/user.js l:78 - you arrived in the controller!");
+    UserModel.findOne({ _id: req.params.id })
+        .then((user) => {
+            if (user._id != req.auth.userId) {
+                console.log("unauthorized");
+                res.status(401).json({ error });
+            } else {
+                console.log("Going to be updated");
+                UserModel.updateOne(
+                    { _id: req.auth.userId },
+                    {
+                        $set: {
+                            onTravel: req.body.onTravel,
+                            travelerType: req.body.travelerType,
+                            bio: req.body.bio,
+                            purpose: req.body.purpose,
+                            languages: req.body.languages,
+                            dreamTrips: req.body.dreamTrips,
+                        },
+                    }
+                )
+                    .then((user) => {
+                        console.log("update worked fine going to send the res");
+                        res.status(200).json({
+                            ...user,
+                            onTravel: req.body.onTravel,
+                            travelerType: req.body.travelerType,
+                            bio: req.body.bio,
+                            purpose: req.body.purpose,
+                            languages: req.body.languages,
+                            dreamTrips: req.body.dreamTrips,
+                        });
+                    })
+                    .catch((error) => {
+                        console.log(
+                            "Something went wrong during the update or during response"
+                        );
+                        res.status(400).json({ error });
+                    });
+            }
+        })
+        .catch((error) => {
+            console.log("Something went wrong during the search for the user");
+            res.status(404).json({ error });
+        });
 };
 
 //This function handles the uploading of the profile picture inside the data base and inside the API

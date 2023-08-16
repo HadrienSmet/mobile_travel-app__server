@@ -34,22 +34,24 @@ const previousTripSchema = mongoose.Schema({
 });
 
 const userSchema = mongoose.Schema({
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    onTravel: { type: Boolean, required: false, default: false },
-    travelerType: { type: String, required: false },
-    profilePicture: { type: String, required: false },
-    description: { type: String, required: false },
-    dreamTrips: { type: [String], default: undefined, required: false },
-    previousTrips: [previousTripSchema],
-    albums: [albumSchema],
-    firstname: { type: String, required: true },
-    lastname: { type: String, required: true },
     age: { type: String, required: true },
-    gender: { type: String, required: true },
+    albums: [albumSchema],
+    bio: { type: String, required: false },
     country: { type: String, required: true },
-    nationality: { type: String, required: true },
+    dreamTrips: { type: [String], default: undefined, required: false },
+    email: { type: String, required: true, unique: true },
+    firstname: { type: String, required: true },
     friends: { type: [String], default: [] },
+    gender: { type: String, required: true },
+    languages: { type: [String], default: undefined, required: false },
+    lastname: { type: String, required: true },
+    nationality: { type: String, required: true },
+    onTravel: { type: Boolean, required: false, default: false },
+    password: { type: String, required: true },
+    previousTrips: [previousTripSchema],
+    profilePicture: { type: String, required: false },
+    purpose: { type: String, required: false },
+    travelerType: { type: String, required: false },
 });
 
 userSchema.plugin(uniqueValidator);
