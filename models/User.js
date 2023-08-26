@@ -12,7 +12,8 @@ const dateSchema = mongoose.Schema({
 });
 const pictureSchema = mongoose.Schema({
     url: { type: String, required: false },
-    location: [positionSchema],
+    // location: [positionSchema],
+    location: { type: positionSchema, required: false },
 });
 const albumSchema = mongoose.Schema({
     name: { type: String, required: false },
@@ -20,21 +21,21 @@ const albumSchema = mongoose.Schema({
 });
 
 const tripTipSchema = mongoose.Schema({
-    location: [positionSchema],
+    location: { type: positionSchema, required: false },
     type: { type: String, required: false },
     about: { type: String, required: false },
     content: { type: String, required: false },
 });
 const tripStepsSchema = mongoose.Schema({
-    location: [positionSchema],
+    location: { type: positionSchema, required: false },
     event: { type: String, required: false },
-    date: [dateSchema],
+    date: { type: dateSchema, required: false },
     content: { type: String, required: false },
 });
 const previousTripSchema = mongoose.Schema({
     title: { type: String, required: false },
     type: { type: String, required: false },
-    withWho: { type: String, required: false },
+    withWhom: { type: String, required: false },
     tips: [tripTipSchema],
     steps: [tripStepsSchema],
 });
