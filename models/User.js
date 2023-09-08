@@ -12,7 +12,6 @@ const dateSchema = mongoose.Schema({
 });
 const pictureSchema = mongoose.Schema({
     url: { type: String, required: false },
-    // location: [positionSchema],
     location: { type: positionSchema, required: false },
 });
 const albumSchema = mongoose.Schema({
@@ -28,7 +27,7 @@ const tripTipSchema = mongoose.Schema({
 });
 const tripStepsSchema = mongoose.Schema({
     location: { type: positionSchema, required: false },
-    event: { type: String, required: false },
+    type: { type: String, required: false },
     date: { type: dateSchema, required: false },
     content: { type: String, required: false },
 });
