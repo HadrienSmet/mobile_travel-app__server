@@ -27,6 +27,7 @@ exports.postTips = (req, res) => {
 
 exports.patchTips = (req, res) => {
     const tipsId = req.params.tipsId;
+    const userId = req.params.userId;
     TipsModel.findOne({ _id: tipsId })
         .then((tips) => {
             if (tips.user_id != userId) {
@@ -39,7 +40,7 @@ exports.patchTips = (req, res) => {
         .catch(() => res.status.json({ message: "Not found" }));
 };
 
-exports.deletePreviousTrip = (req, res) => {
+exports.deleteTips = (req, res) => {
     const userId = req.params.userId;
     const tipsId = req.params.tipsId;
     TipsModel.findOne({ _id: tipsId })

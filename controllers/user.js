@@ -228,7 +228,7 @@ exports.patchPreviousTrips = (req, res) => {
                             "previousTrips.$.title": req.body.title,
                             "previousTrips.$.type": req.body.type,
                             "previousTrips.$.withWhom": req.body.withWhom,
-                            "previousTrips.$.tips": req.body.tips,
+                            // "previousTrips.$.tips": req.body.tips,
                             "previousTrips.$.steps": req.body.steps,
                         },
                     },
