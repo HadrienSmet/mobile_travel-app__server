@@ -19,12 +19,12 @@ const albumSchema = mongoose.Schema({
     pictures: [pictureSchema],
 });
 
-const tripTipSchema = mongoose.Schema({
-    location: { type: positionSchema, required: false },
-    type: { type: String, required: false },
-    about: { type: String, required: false },
-    content: { type: String, required: false },
-});
+// const tripTipSchema = mongoose.Schema({
+//     location: { type: positionSchema, required: false },
+//     type: { type: String, required: false },
+//     about: { type: String, required: false },
+//     content: { type: String, required: false },
+// });
 const tripStepsSchema = mongoose.Schema({
     location: { type: positionSchema, required: false },
     type: { type: String, required: false },
@@ -35,7 +35,7 @@ const previousTripSchema = mongoose.Schema({
     title: { type: String, required: false },
     type: { type: String, required: false },
     withWhom: { type: String, required: false },
-    tips: [tripTipSchema],
+    // tips: [tripTipSchema],
     steps: [tripStepsSchema],
 });
 
@@ -62,4 +62,5 @@ const userSchema = mongoose.Schema({
 
 userSchema.plugin(uniqueValidator);
 
+module.exports = mongoose.model("PreviousTrip", previousTripSchema);
 module.exports = mongoose.model("User", userSchema);

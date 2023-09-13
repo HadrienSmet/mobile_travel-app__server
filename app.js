@@ -2,6 +2,7 @@ const express = require("express");
 const helmet = require("helmet");
 const path = require("path");
 const userRoutes = require("./routes/user");
+const tipsRoutes = require("./routes/tips");
 // const postsRoutes = require("./routes/posts");
 require("./dbConfig");
 
@@ -29,6 +30,7 @@ app.use(express.json());
 
 // app.use("/api", postsRoutes);
 app.use("/api/auth", userRoutes);
+app.use("/api/", tipsRoutes);
 
 app.use("/images", express.static(path.join(__dirname, "images")));
 

@@ -9,6 +9,12 @@ router.post("/signup", password, userCtrl.signup);
 router.post("/login", userCtrl.login);
 router.patch("/patchProfile/:id", auth, multer, userCtrl.patchProfileData);
 router.patch("/patchTrips/:id", auth, multer, userCtrl.patchPreviousTrips);
+router.patch(
+    "/users/:id/setProfilePicture",
+    auth,
+    multer,
+    userCtrl.setProfilePicture
+);
 router.delete(
     "/users/:id/previousTrips/:tripTitle",
     auth,

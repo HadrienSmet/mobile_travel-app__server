@@ -1,18 +1,18 @@
 require("dotenv").config();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-// const { Storage } = require("@google-cloud/storage");
-// const path = require("path");
+const { Storage } = require("@google-cloud/storage");
+const path = require("path");
 const UserModel = require("../models/User");
-// const googleCloud = new Storage({
-//     keyFilename: path.join(
-//         __dirname,
-//         `../${process.env.GOOGLE_APPLICATION_CREDENTIALS}`
-//     ),
-//     projectId: process.env.GCS_ID,
-// });
+const googleCloud = new Storage({
+    keyFilename: path.join(
+        __dirname,
+        `../${process.env.GOOGLE_APPLICATION_CREDENTIALS}`
+    ),
+    projectId: process.env.GCS_ID,
+});
 
-// const gcFiles = googleCloud.bucket(process.env.GCS_SPLIT_STRING);
+const gcFiles = googleCloud.bucket(process.env.GCS_SPLIT_STRING);
 
 // const handleCoverPicture = (req, res) => {
 //     let urlCoverPicture;
@@ -189,10 +189,8 @@ exports.patchProfileData = (req, res) => {
 };
 exports.deletePreviousTrip = (req, res) => {
     const tripTitle = req.params.tripTitle;
-    console.log("you are in the controller");
     UserModel.findOne({ _id: req.params.id })
         .then((user) => {
-            console.log("found it");
             if (user._id != req.auth.userId) {
                 return res.status(401).json({ message: "Unauthourized" });
             }
@@ -293,6 +291,23 @@ exports.checkMail = (req, res) => {
                     "Cette adresse email n'est pas encore présente dans la base donnée",
             })
         );
+};
+
+exports.setProfilePicture = (req, res) => {
+    UserModel.findOne({ _id: req.params.id })
+        .then((user) => {
+            if (user._id != req.auth.userId)
+                return res.status(401).json({ message: "Unauthorized" });
+
+            console.log("req.file");
+            console.log(req.file);
+            console.log("req.files");
+            console.log(req.files);
+            // let urlCoverPicture = `${process.env.GCS_URL}${req.files[0].filename}`;
+
+            UserModel.updateOne({ _id: req.params.id });
+        })
+        .catch(() => res.status(400).json({ message: "User not found" }));
 };
 //This function handles the uploading of the profile picture inside the data base and inside the API
 //It starts by taking the file in the request in order to put it into a variable with the appropriate name
