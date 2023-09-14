@@ -71,7 +71,7 @@ exports.signup = (req, res) => {
                         email: req.body.email,
                         firstname: user.firstname,
                         lastname: user.lastname,
-                        age: user.age,
+                        birth: user.birth,
                         gender: user.gender,
                         country: user.country,
                         nationality: user.nationality,
@@ -124,7 +124,7 @@ exports.login = (req, res) => {
                         nationality: user.nationality,
                         firstname: user.firstname,
                         lastname: user.lastname,
-                        age: user.age,
+                        birth: user.birth,
                         gender: user.gender,
                         bio: user.bio,
                         onTravel: user.onTravel,
@@ -203,7 +203,7 @@ exports.deletePreviousTrip = (req, res) => {
                         message: "Trip succesfully delete",
                     });
                 })
-                .catch((error) => {
+                .catch(() => {
                     res.status(500).json({
                         message:
                             "An error occured while the trip was getting removed",

@@ -40,7 +40,7 @@ const previousTripSchema = mongoose.Schema({
 });
 
 const userSchema = mongoose.Schema({
-    age: { type: String, required: true },
+    birth: { type: Number, required: true },
     albums: [albumSchema],
     bio: { type: String, required: false },
     country: { type: String, required: true },

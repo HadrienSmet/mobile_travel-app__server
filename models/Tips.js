@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
 const positionSchema = mongoose.Schema({
     longitude: { type: Number, required: true },
