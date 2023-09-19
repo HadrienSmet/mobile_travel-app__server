@@ -79,3 +79,33 @@ exports.deleteTips = (req, res) => {
         })
         .catch(() => res.status(404).json({ message: "Tips not found" }));
 };
+exports.likeTips = (req, res) => {
+    const tipsId = req.params.tipsId;
+    const userId = req.params.userId;
+    TipsModel.updateOne({ _id: tipsId }, { $push: { upVotes: userId } })
+        .then(() => res.status(204).json({ message: "Like correctly send" }))
+        .catch(() => res.status(500).json({ message: "Server Error" }));
+};
+exports.dislikeTips = (req, res) => {
+    const tipsId = req.params.tipsId;
+    const userId = req.params.userId;
+    TipsModel.updateOne({ _id: tipsId }, { $push: { downVotes: userId } })
+        .then(() => res.status(204).json({ message: "Dislike correctly send" }))
+        .catch(() => res.status(500).json({ message: "Server Error" }));
+};
+exports.removeLike = (req, res) => {
+    const tipsId = req.params.tipsId;
+    const userId = req.params.userId;
+    TipsModel.updateOne({ _id: tipsId }, { $pull: { upVotes: userId } })
+        .then(() => res.status(204).json({ message: "Like correctly removed" }))
+        .catch(() => res.status(500).json({ message: "Server Error" }));
+};
+exports.removeDislike = (req, res) => {
+    const tipsId = req.params.tipsId;
+    const userId = req.params.userId;
+    TipsModel.updateOne({ _id: tipsId }, { $pull: { downVotes: userId } })
+        .then(() =>
+            res.status(204).json({ message: "Dislike correctly removed" })
+        )
+        .catch(() => res.status(500).json({ message: "Server Error" }));
+};
