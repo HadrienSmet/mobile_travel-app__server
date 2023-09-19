@@ -8,7 +8,7 @@ const positionSchema = mongoose.Schema({
 
 const tipSchema = mongoose.Schema({
     user_id: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    madeDuring: { type: String, ref: "PreviousTrip", required: false },
+    // madeDuring: { type: String, ref: "PreviousTrip", required: false },
     author: { type: String, required: true },
     location: { type: positionSchema, required: true },
     type: { type: String, required: true },

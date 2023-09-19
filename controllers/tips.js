@@ -1,6 +1,11 @@
 require("dotenv").config();
 const TipsModel = require("../models/Tips");
 
+exports.getEveryTips = (req, res) => {
+    TipsModel.find()
+        .then((tips) => res.status(200).json(tips))
+        .catch(() => res.status(500).json({ message: "Server error" }));
+};
 exports.getUserTips = (req, res) => {
     const userId = req.params.userId;
     TipsModel.find({ user_id: userId })
@@ -19,7 +24,18 @@ exports.getPreviousTripTips = (req, res) => {
 };
 
 exports.postTips = (req, res) => {
-    const tips = new TipsModel({ ...req.body });
+    console.log({ ...req.body });
+    // const tips = new TipsModel({
+    //     user_id: req.body.user_id,
+    //     author: req.body.author,
+    //     location: req.body.location,
+    //     type: req.body.type,
+    //     about: req.body.about,
+    //     content: req.body.content,
+    //     upVotes: req.body.upVotes,
+    //     downVotes: req.body.downVotes,
+    // });
+    const tips = new TipsModel(req.body);
     tips.save()
         .then(() => res.status(201).json({ message: "Ressource created" }))
         .catch(() => res.status(400).json({ message: "Bad request" }));

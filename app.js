@@ -30,7 +30,7 @@ app.use(express.json());
 
 // app.use("/api", postsRoutes);
 app.use("/api/auth", userRoutes);
-app.use("/api/", tipsRoutes);
+app.use("/api", tipsRoutes);
 
 app.use("/images", express.static(path.join(__dirname, "images")));
 
