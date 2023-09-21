@@ -19,12 +19,6 @@ const albumSchema = mongoose.Schema({
     pictures: [pictureSchema],
 });
 
-// const tripTipSchema = mongoose.Schema({
-//     location: { type: positionSchema, required: false },
-//     type: { type: String, required: false },
-//     about: { type: String, required: false },
-//     content: { type: String, required: false },
-// });
 const tripStepsSchema = mongoose.Schema({
     location: { type: positionSchema, required: false },
     type: { type: String, required: false },
@@ -35,15 +29,15 @@ const previousTripSchema = mongoose.Schema({
     title: { type: String, required: false },
     type: { type: String, required: false },
     withWhom: { type: String, required: false },
-    // tips: [tripTipSchema],
     steps: [tripStepsSchema],
 });
 
 const userSchema = mongoose.Schema({
-    birth: { type: Number, required: true },
     albums: [albumSchema],
+    birth: { type: Number, required: true },
     bio: { type: String, required: false },
     country: { type: String, required: true },
+    currentPosition: { type: positionSchema, default: undefined },
     dreamTrips: { type: [String], default: undefined, required: false },
     email: { type: String, required: true, unique: true },
     firstname: { type: String, required: true },
