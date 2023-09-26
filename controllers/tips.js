@@ -36,7 +36,6 @@ exports.getEveryTips = (req, res) => {
             longitude: { $gte: left, $lte: right },
         },
     };
-
     if (checkGetQueryParams(req, limitInt)) {
         let query = aboutParam
             ? TipsModel.find({ about: aboutParam }, locationFilter)

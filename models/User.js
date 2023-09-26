@@ -37,7 +37,7 @@ const userSchema = mongoose.Schema({
     birth: { type: Number, required: true },
     bio: { type: String, required: false },
     country: { type: String, required: true },
-    currentPosition: { type: positionSchema, default: undefined },
+    coordinates: { type: positionSchema, default: undefined },
     dreamTrips: { type: [String], default: undefined, required: false },
     email: { type: String, required: true, unique: true },
     firstname: { type: String, required: true },
