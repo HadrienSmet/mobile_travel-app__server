@@ -1,55 +1,6 @@
 require("dotenv").config();
 const TipsModel = require("../models/Tips");
 
-const checkGetQueryParams = (req, limitInt) => {
-    if (
-        req.query.limit &&
-        req.query.latitude &&
-        req.query.longitude &&
-        req.query.latitudeDelta &&
-        req.query.longitudeDelta &&
-        !isNaN(limitInt) &&
-        limitInt > 0
-    ) {
-        return true;
-    } else {
-        return false;
-    }
-};
-
-exports.getEveryTips = (req, res) => {
-    const limit = req.query.limit;
-    const latitude = req.query.latitude;
-    const longitude = req.query.longitude;
-    const latitudeDelta = req.query.latitudeDelta;
-    const longitudeDelta = req.query.longitudeDelta;
-    const aboutParam = req.query.about;
-
-    const limitInt = parseInt(limit);
-    const top = parseInt(latitude);
-    const left = parseInt(longitude);
-    const right = left + parseInt(longitudeDelta);
-    const bottom = top + parseInt(latitudeDelta);
-    const locationFilter = {
-        location: {
-            latitude: { $gte: bottom, $lte: top },
-            longitude: { $gte: left, $lte: right },
-        },
-    };
-    if (checkGetQueryParams(req, limitInt)) {
-        let query = aboutParam
-            ? TipsModel.find({ about: aboutParam }, locationFilter)
-            : TipsModel.find(locationFilter);
-        query
-            .limit(limitInt)
-            .then((tips) => res.status(200).json(tips))
-            .catch(() => res.status(500).json({ message: "Server error" }));
-    } else {
-        res.status(400).json({
-            message: "Problem related with the params of the query",
-        });
-    }
-};
 exports.getUserTips = (req, res) => {
     const userId = req.params.userId;
     TipsModel.find({ user_id: userId })

@@ -1,10 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const tipsCtrl = require("../controllers/tips");
+const getAllCtrl = require("../controllers/tips/getAll");
 
 router.delete("/users/:userId/tips/:tipsId", tipsCtrl.deleteTips);
 
-router.get("/tips", tipsCtrl.getEveryTips);
+router.get("/tips", getAllCtrl.getAll);
 router.get("/users/:userId/tips", tipsCtrl.getUserTips);
 router.get("/users/:userId/tips/:tripTitle", tipsCtrl.getPreviousTripTips);
 
