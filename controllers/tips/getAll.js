@@ -53,16 +53,14 @@ exports.getAll = (req, res) => {
         "location.latitude": { $gte: bottom, $lte: top },
         "location.longitude": { $gte: left, $lte: right },
     };
-    console.log("getAllCtrl l:42 => locationFilter");
-    console.log(locationFilter);
+    console.log("aboutParam:");
+    console.log(aboutParam);
     if (checkQueryParams(req, limitInt)) {
         let query = aboutParam
-            ? TipsModel.find({ about: aboutParam }, locationFilter)
+            ? TipsModel.find({ ...locationFilter, about: aboutParam })
             : TipsModel.find(locationFilter);
-        query
-            .limit(limitInt)
-            .then((tips) => res.status(200).json(tips))
-            .catch(() => res.status(500).json({ message: "Server error" }));
+        query.limit(limitInt).then((tips) => res.status(200).json(tips));
+        // .catch(() => res.status(500).json({ message: "Server error" }));
     } else {
         res.status(400).json({
             message: "Problem related with the params of the query",
