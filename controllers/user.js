@@ -1,18 +1,18 @@
-require("dotenv").config();
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const { Storage } = require("@google-cloud/storage");
-const path = require("path");
-const UserModel = require("../models/User");
-const googleCloud = new Storage({
-    keyFilename: path.join(
-        __dirname,
-        `../${process.env.GOOGLE_APPLICATION_CREDENTIALS}`
-    ),
-    projectId: process.env.GCS_ID,
-});
+// require("dotenv").config();
+// const bcrypt = require("bcrypt");
+// const jwt = require("jsonwebtoken");
+// const { Storage } = require("@google-cloud/storage");
+// const path = require("path");
+// const UserModel = require("../models/User");
+// const googleCloud = new Storage({
+//     keyFilename: path.join(
+//         __dirname,
+//         `../${process.env.GOOGLE_APPLICATION_CREDENTIALS}`
+//     ),
+//     projectId: process.env.GCS_ID,
+// });
 
-const gcFiles = googleCloud.bucket(process.env.GCS_SPLIT_STRING);
+// const gcFiles = googleCloud.bucket(process.env.GCS_SPLIT_STRING);
 
 // const handleCoverPicture = (req, res) => {
 //     let urlCoverPicture;
@@ -43,273 +43,273 @@ const gcFiles = googleCloud.bucket(process.env.GCS_SPLIT_STRING);
 //Starts by hashing the password --> 10 times
 // --> Warning: bcrypt.hash is async function
 //If hash succes: -create a new Object to post to the database with the password hashed
-exports.signup = (req, res) => {
-    bcrypt
-        .hash(req.body.password, 10)
-        .then((hash) => {
-            const user = new UserModel({
-                // email: req.body.email,
-                // password: hash,
-                // firstname: req.body.firstname,
-                // lastname: req.body.lastname,
-                // age: req.body.age,
-                // gender: req.body.gender,
-                // country: req.body.country,
-                // nationality: req.body.nationality,
-                ...req.body,
-                password: hash,
-            });
-            user.save()
-                .then(() => {
-                    res.status(200).json({
-                        userId: user._id,
-                        token: jwt.sign(
-                            { userId: user._id },
-                            process.env.ACCESS_TOKEN_SECRET,
-                            { expiresIn: "24h" }
-                        ),
-                        email: req.body.email,
-                        firstname: user.firstname,
-                        lastname: user.lastname,
-                        birth: user.birth,
-                        gender: user.gender,
-                        country: user.country,
-                        coordinates: user.coordinates,
-                        nationality: user.nationality,
-                        friends: user.friends,
-                        albums: user.albums,
-                        onTravel: user.onTravel,
-                        previousTrips: user.previousTrips,
-                        bio: user.bio,
-                        dreamTrips: user.dreamTrips,
-                        languages: user.languages,
-                        purpose: user.purpose,
-                        travelerType: user.travelerType,
-                    });
-                })
-                .catch(() =>
-                    res.status(400).json({
-                        message: "There was an error during the saving",
-                    })
-                );
-        })
-        .catch(() => res.status(500).json({ message: "Server Error" }));
-};
+// exports.signup = (req, res) => {
+//     bcrypt
+//         .hash(req.body.password, 10)
+//         .then((hash) => {
+//             const user = new UserModel({
+//                 // email: req.body.email,
+//                 // password: hash,
+//                 // firstname: req.body.firstname,
+//                 // lastname: req.body.lastname,
+//                 // age: req.body.age,
+//                 // gender: req.body.gender,
+//                 // country: req.body.country,
+//                 // nationality: req.body.nationality,
+//                 ...req.body,
+//                 password: hash,
+//             });
+//             user.save()
+//                 .then(() => {
+//                     res.status(200).json({
+//                         userId: user._id,
+//                         token: jwt.sign(
+//                             { userId: user._id },
+//                             process.env.ACCESS_TOKEN_SECRET,
+//                             { expiresIn: "24h" }
+//                         ),
+//                         email: req.body.email,
+//                         firstname: user.firstname,
+//                         lastname: user.lastname,
+//                         birth: user.birth,
+//                         gender: user.gender,
+//                         country: user.country,
+//                         coordinates: user.coordinates,
+//                         nationality: user.nationality,
+//                         friends: user.friends,
+//                         albums: user.albums,
+//                         onTravel: user.onTravel,
+//                         previousTrips: user.previousTrips,
+//                         bio: user.bio,
+//                         dreamTrips: user.dreamTrips,
+//                         languages: user.languages,
+//                         purpose: user.purpose,
+//                         travelerType: user.travelerType,
+//                     });
+//                 })
+//                 .catch(() =>
+//                     res.status(400).json({
+//                         message: "There was an error during the saving",
+//                     })
+//                 );
+//         })
+//         .catch(() => res.status(500).json({ message: "Server Error" }));
+// };
 
-//Handles what happens when the user submits the sign in form
-//Starts by searching an email in the data matching whit one provided by the user
-//Error if the mailadress can't be found
-//If not we compare the password provided by the user with the one in the database
-//Warning --> bcrypt.compare is async function
-//If passwords match: provides an authorisation token to the user
-exports.login = (req, res) => {
-    UserModel.findOne({ email: req.body.email })
-        .then((user) => {
-            if (!user) {
-                return res.status(401).json({
-                    message: "User not found",
-                });
-            }
-            bcrypt
-                .compare(req.body.password, user.password)
-                .then((valid) => {
-                    if (!valid) {
-                        return res.status(401).json({
-                            message: "Incorrect email or password",
-                        });
-                    }
-                    res.status(200).json({
-                        email: user.email,
-                        profilePicture: user.profilePicture,
-                        country: user.country,
-                        coordinates: user.coordinates,
-                        nationality: user.nationality,
-                        firstname: user.firstname,
-                        lastname: user.lastname,
-                        birth: user.birth,
-                        gender: user.gender,
-                        bio: user.bio,
-                        onTravel: user.onTravel,
-                        languages: user.languages,
-                        purpose: user.purpose,
-                        travelerType: user.travelerType,
-                        dreamTrips: user.dreamTrips,
-                        previousTrips: user.previousTrips,
-                        albums: user.albums,
-                        friends: user.friends,
-                        userId: user._id,
-                        token: jwt.sign(
-                            { userId: user._id },
-                            process.env.ACCESS_TOKEN_SECRET,
-                            { expiresIn: "24h" }
-                        ),
-                    });
-                })
-                .catch(() => res.status(500).json({ message: "Error server" }));
-        })
-        .catch(() => res.status(500).json({ message: "User not found" }));
-};
+// //Handles what happens when the user submits the sign in form
+// //Starts by searching an email in the data matching whit one provided by the user
+// //Error if the mailadress can't be found
+// //If not we compare the password provided by the user with the one in the database
+// //Warning --> bcrypt.compare is async function
+// //If passwords match: provides an authorisation token to the user
+// exports.login = (req, res) => {
+//     UserModel.findOne({ email: req.body.email })
+//         .then((user) => {
+//             if (!user) {
+//                 return res.status(401).json({
+//                     message: "User not found",
+//                 });
+//             }
+//             bcrypt
+//                 .compare(req.body.password, user.password)
+//                 .then((valid) => {
+//                     if (!valid) {
+//                         return res.status(401).json({
+//                             message: "Incorrect email or password",
+//                         });
+//                     }
+//                     res.status(200).json({
+//                         email: user.email,
+//                         profilePicture: user.profilePicture,
+//                         country: user.country,
+//                         coordinates: user.coordinates,
+//                         nationality: user.nationality,
+//                         firstname: user.firstname,
+//                         lastname: user.lastname,
+//                         birth: user.birth,
+//                         gender: user.gender,
+//                         bio: user.bio,
+//                         onTravel: user.onTravel,
+//                         languages: user.languages,
+//                         purpose: user.purpose,
+//                         travelerType: user.travelerType,
+//                         dreamTrips: user.dreamTrips,
+//                         previousTrips: user.previousTrips,
+//                         albums: user.albums,
+//                         friends: user.friends,
+//                         userId: user._id,
+//                         token: jwt.sign(
+//                             { userId: user._id },
+//                             process.env.ACCESS_TOKEN_SECRET,
+//                             { expiresIn: "24h" }
+//                         ),
+//                     });
+//                 })
+//                 .catch(() => res.status(500).json({ message: "Error server" }));
+//         })
+//         .catch(() => res.status(500).json({ message: "User not found" }));
+// };
 
-exports.patchProfileData = (req, res) => {
-    UserModel.findOne({ _id: req.params.id })
-        .then((user) => {
-            if (user._id != req.auth.userId) {
-                res.status(401).json({ message: "Unauthorized" });
-            } else {
-                UserModel.updateOne(
-                    { _id: req.auth.userId },
-                    {
-                        // $set: {
-                        //     onTravel: req.body.onTravel,
-                        //     travelerType: req.body.travelerType,
-                        //     bio: req.body.bio,
-                        //     purpose: req.body.purpose,
-                        //     languages: req.body.languages,
-                        //     dreamTrips: req.body.dreamTrips,
-                        // },
-                        $set: { ...req.body },
-                    }
-                )
-                    .then((user) => {
-                        res.status(200).json({
-                            ...user,
-                            ...req.body,
-                            // onTravel: req.body.onTravel,
-                            // travelerType: req.body.travelerType,
-                            // bio: req.body.bio,
-                            // purpose: req.body.purpose,
-                            // languages: req.body.languages,
-                            // dreamTrips: req.body.dreamTrips,
-                        });
-                    })
-                    .catch(() =>
-                        res.status(400).json({ message: "Error during update" })
-                    );
-            }
-        })
-        .catch(() => res.status(404).json({ message: "User not found" }));
-};
-exports.deletePreviousTrip = (req, res) => {
-    const tripTitle = req.params.tripTitle;
-    UserModel.findOne({ _id: req.params.id })
-        .then((user) => {
-            if (user._id != req.auth.userId) {
-                return res.status(401).json({ message: "Unauthourized" });
-            }
-            UserModel.updateOne(
-                { _id: req.auth.userId },
-                { $pull: { previousTrips: { title: tripTitle } } }
-            )
-                .then(() => {
-                    res.status(200).json({
-                        message: "Trip succesfully delete",
-                    });
-                })
-                .catch(() => {
-                    res.status(500).json({
-                        message:
-                            "An error occured while the trip was getting removed",
-                    });
-                });
-        })
-        .catch(() => res.status(404).json({ message: "User not found" }));
-};
-exports.patchPreviousTrips = (req, res) => {
-    UserModel.findOne({ _id: req.params.id })
-        .then((user) => {
-            if (user._id != req.auth.userId) {
-                res.status(401).json({ message: "Unauthorized" });
-            } else {
-                UserModel.updateOne(
-                    {
-                        _id: req.auth.userId,
-                        "previousTrips.title": req.body.title,
-                    },
-                    {
-                        $set: {
-                            "previousTrips.$.title": req.body.title,
-                            "previousTrips.$.type": req.body.type,
-                            "previousTrips.$.withWhom": req.body.withWhom,
-                            "previousTrips.$.steps": req.body.steps,
-                        },
-                    },
-                    { new: true }
-                )
-                    .then((updatedUser) => {
-                        if (!updatedUser) {
-                            return res.status(404).json({
-                                message:
-                                    "Updated but did not succeeded to properly send the updated user",
-                            });
-                        }
-                        res.status(200).json(updatedUser);
-                    })
-                    .catch(() =>
-                        res.status(400).json({ message: "Error during update" })
-                    );
-            }
-        })
-        .catch(() => res.status(404).json({ message: "User not found" }));
-};
+// exports.patchProfileData = (req, res) => {
+//     UserModel.findOne({ _id: req.params.id })
+//         .then((user) => {
+//             if (user._id != req.auth.userId) {
+//                 res.status(401).json({ message: "Unauthorized" });
+//             } else {
+//                 UserModel.updateOne(
+//                     { _id: req.auth.userId },
+//                     {
+//                         // $set: {
+//                         //     onTravel: req.body.onTravel,
+//                         //     travelerType: req.body.travelerType,
+//                         //     bio: req.body.bio,
+//                         //     purpose: req.body.purpose,
+//                         //     languages: req.body.languages,
+//                         //     dreamTrips: req.body.dreamTrips,
+//                         // },
+//                         $set: { ...req.body },
+//                     }
+//                 )
+//                     .then((user) => {
+//                         res.status(200).json({
+//                             ...user,
+//                             ...req.body,
+//                             // onTravel: req.body.onTravel,
+//                             // travelerType: req.body.travelerType,
+//                             // bio: req.body.bio,
+//                             // purpose: req.body.purpose,
+//                             // languages: req.body.languages,
+//                             // dreamTrips: req.body.dreamTrips,
+//                         });
+//                     })
+//                     .catch(() =>
+//                         res.status(400).json({ message: "Error during update" })
+//                     );
+//             }
+//         })
+//         .catch(() => res.status(404).json({ message: "User not found" }));
+// };
+// exports.deletePreviousTrip = (req, res) => {
+//     const tripTitle = req.params.tripTitle;
+//     UserModel.findOne({ _id: req.params.id })
+//         .then((user) => {
+//             if (user._id != req.auth.userId) {
+//                 return res.status(401).json({ message: "Unauthourized" });
+//             }
+//             UserModel.updateOne(
+//                 { _id: req.auth.userId },
+//                 { $pull: { previousTrips: { title: tripTitle } } }
+//             )
+//                 .then(() => {
+//                     res.status(200).json({
+//                         message: "Trip succesfully delete",
+//                     });
+//                 })
+//                 .catch(() => {
+//                     res.status(500).json({
+//                         message:
+//                             "An error occured while the trip was getting removed",
+//                     });
+//                 });
+//         })
+//         .catch(() => res.status(404).json({ message: "User not found" }));
+// };
+// exports.patchPreviousTrips = (req, res) => {
+//     UserModel.findOne({ _id: req.params.id })
+//         .then((user) => {
+//             if (user._id != req.auth.userId) {
+//                 res.status(401).json({ message: "Unauthorized" });
+//             } else {
+//                 UserModel.updateOne(
+//                     {
+//                         _id: req.auth.userId,
+//                         "previousTrips.title": req.body.title,
+//                     },
+//                     {
+//                         $set: {
+//                             "previousTrips.$.title": req.body.title,
+//                             "previousTrips.$.type": req.body.type,
+//                             "previousTrips.$.withWhom": req.body.withWhom,
+//                             "previousTrips.$.steps": req.body.steps,
+//                         },
+//                     },
+//                     { new: true }
+//                 )
+//                     .then((updatedUser) => {
+//                         if (!updatedUser) {
+//                             return res.status(404).json({
+//                                 message:
+//                                     "Updated but did not succeeded to properly send the updated user",
+//                             });
+//                         }
+//                         res.status(200).json(updatedUser);
+//                     })
+//                     .catch(() =>
+//                         res.status(400).json({ message: "Error during update" })
+//                     );
+//             }
+//         })
+//         .catch(() => res.status(404).json({ message: "User not found" }));
+// };
 
-exports.addNewTrip = (req, res) => {
-    UserModel.findOne({ _id: req.params.userId })
-        .then((user) => {
-            if (user._id != req.auth.userId) {
-                return res.status(401).json({ message: "Unauthorized" });
-            } else {
-                let trip = { ...req.body };
-                UserModel.updateOne(
-                    { _id: req.auth.userId },
-                    { $push: { previousTrips: trip } }
-                )
-                    .then(() =>
-                        res.status(201).json({
-                            message: "Trip saved",
-                            newTrip: trip,
-                        })
-                    )
-                    .catch(() =>
-                        res.status(400).json({
-                            message: "Error during update",
-                        })
-                    );
-            }
-        })
-        .catch(() =>
-            res.status(400).json({
-                message: "User not found",
-            })
-        );
-};
+// exports.addNewTrip = (req, res) => {
+//     UserModel.findOne({ _id: req.params.userId })
+//         .then((user) => {
+//             if (user._id != req.auth.userId) {
+//                 return res.status(401).json({ message: "Unauthorized" });
+//             } else {
+//                 let trip = { ...req.body };
+//                 UserModel.updateOne(
+//                     { _id: req.auth.userId },
+//                     { $push: { previousTrips: trip } }
+//                 )
+//                     .then(() =>
+//                         res.status(201).json({
+//                             message: "Trip saved",
+//                             newTrip: trip,
+//                         })
+//                     )
+//                     .catch(() =>
+//                         res.status(400).json({
+//                             message: "Error during update",
+//                         })
+//                     );
+//             }
+//         })
+//         .catch(() =>
+//             res.status(400).json({
+//                 message: "User not found",
+//             })
+//         );
+// };
 
-exports.checkMail = (req, res) => {
-    UserModel.findOne({ email: req.params.email })
-        .then((user) => res.status(200).json(user))
-        .catch(() =>
-            res.status(400).json({
-                message:
-                    "Cette adresse email n'est pas encore présente dans la base donnée",
-            })
-        );
-};
+// exports.checkMail = (req, res) => {
+//     UserModel.findOne({ email: req.params.email })
+//         .then((user) => res.status(200).json(user))
+//         .catch(() =>
+//             res.status(400).json({
+//                 message:
+//                     "Cette adresse email n'est pas encore présente dans la base donnée",
+//             })
+//         );
+// };
 
-exports.setProfilePicture = (req, res) => {
-    UserModel.findOne({ _id: req.params.id })
-        .then((user) => {
-            if (user._id != req.auth.userId)
-                return res.status(401).json({ message: "Unauthorized" });
+// exports.setProfilePicture = (req, res) => {
+//     UserModel.findOne({ _id: req.params.id })
+//         .then((user) => {
+//             if (user._id != req.auth.userId)
+//                 return res.status(401).json({ message: "Unauthorized" });
 
-            console.log("req.file");
-            console.log(req.file);
-            console.log("req.files");
-            console.log(req.files);
-            // let urlCoverPicture = `${process.env.GCS_URL}${req.files[0].filename}`;
+//             console.log("req.file");
+//             console.log(req.file);
+//             console.log("req.files");
+//             console.log(req.files);
+//             // let urlCoverPicture = `${process.env.GCS_URL}${req.files[0].filename}`;
 
-            UserModel.updateOne({ _id: req.params.id });
-        })
-        .catch(() => res.status(400).json({ message: "User not found" }));
-};
+//             UserModel.updateOne({ _id: req.params.id });
+//         })
+//         .catch(() => res.status(400).json({ message: "User not found" }));
+// };
 //This function handles the uploading of the profile picture inside the data base and inside the API
 //It starts by taking the file in the request in order to put it into a variable with the appropriate name
 //Then we start searching in the data base for a user whose id matches with the one from the request url

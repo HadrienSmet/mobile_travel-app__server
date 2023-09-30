@@ -1,21 +1,5 @@
 const TipsModel = require("../../models/Tips");
 
-const checkQueryParams = (req, limitInt) => {
-    if (
-        req.query.limit &&
-        req.query.latitude &&
-        req.query.longitude &&
-        req.query.latitudeDelta &&
-        req.query.longitudeDelta &&
-        !isNaN(limitInt) &&
-        limitInt > 0
-    ) {
-        return true;
-    } else {
-        return false;
-    }
-};
-
 const handleQueryParams = (req) => {
     const {
         limit,
@@ -36,34 +20,48 @@ const handleQueryParams = (req) => {
     const right = longInt + halfLongDeltaInt;
     const left = longInt - halfLongDeltaInt;
 
-    return {
-        aboutParam,
-        limitInt,
-        top,
-        left,
-        right,
-        bottom,
-    };
-};
-
-exports.getAll = (req, res) => {
-    const { aboutParam, limitInt, top, left, right, bottom } =
-        handleQueryParams(req);
     const locationFilter = {
         "location.latitude": { $gte: bottom, $lte: top },
         "location.longitude": { $gte: left, $lte: right },
     };
-    console.log("aboutParam:");
-    console.log(aboutParam);
+
+    return {
+        aboutParam,
+        limitInt,
+        locationFilter,
+    };
+};
+
+const checkQueryParams = (req, limitInt) => {
+    const { limit, latitude, longitude, latitudeDelta, longitudeDelta } =
+        req.query;
+    if (
+        limit &&
+        latitude &&
+        longitude &&
+        latitudeDelta &&
+        longitudeDelta &&
+        !isNaN(limitInt) &&
+        limitInt > 0
+    ) {
+        return true;
+    } else {
+        return false;
+    }
+};
+
+exports.getAll = (req, res) => {
+    const { aboutParam, limitInt, locationFilter } = handleQueryParams(req);
     if (checkQueryParams(req, limitInt)) {
-        let query = aboutParam
-            ? TipsModel.find({ ...locationFilter, about: aboutParam })
-            : TipsModel.find(locationFilter);
-        query.limit(limitInt).then((tips) => res.status(200).json(tips));
-        // .catch(() => res.status(500).json({ message: "Server error" }));
+        const queryFilter = aboutParam
+            ? { ...locationFilter, about: aboutParam }
+            : locationFilter;
+        TipsModel.find(queryFilter)
+            .limit(limitInt)
+            .then((tips) => res.status(200).json(tips));
     } else {
         res.status(400).json({
-            message: "Problem related with the params of the query",
+            message: "Bad request - query params required",
         });
     }
 };
