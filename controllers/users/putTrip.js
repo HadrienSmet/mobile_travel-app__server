@@ -1,7 +1,7 @@
 const UsersModel = require("../../models/Users");
 
 exports.putTrip = (req, res) => {
-    UsersModel.findOne({ _id: req.params.userId })
+    UsersModel.findOne({ _id: req.params.id })
         .then((user) => {
             if (user._id != req.auth.userId) {
                 return res.status(401).json({ message: "Unauthorized" });
