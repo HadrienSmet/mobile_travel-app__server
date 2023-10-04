@@ -1,7 +1,7 @@
 const UsersModel = require("../../models/Users");
 
 exports.patchTrip = (req, res) => {
-    const { title, type, withWhom, steps } = req.body;
+    const { color, title, type, withWhom, steps } = req.body;
     UsersModel.findOne({ _id: req.params.id })
         .then((user) => {
             if (user._id != req.auth.userId) {
@@ -14,6 +14,7 @@ exports.patchTrip = (req, res) => {
                     },
                     {
                         $set: {
+                            "previousTrips.$.color": color,
                             "previousTrips.$.title": title,
                             "previousTrips.$.type": type,
                             "previousTrips.$.withWhom": withWhom,

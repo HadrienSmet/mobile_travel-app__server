@@ -32,7 +32,7 @@ const handleQueryParams = (req) => {
     };
 };
 
-const checkQueryParams = (req, limitInt) => {
+const checkQueryParams = (req) => {
     const { limit, latitude, longitude, latitudeDelta, longitudeDelta } =
         req.query;
     if (
@@ -41,8 +41,8 @@ const checkQueryParams = (req, limitInt) => {
         longitude &&
         latitudeDelta &&
         longitudeDelta &&
-        !isNaN(limitInt) &&
-        limitInt > 0
+        !isNaN(Number(limit)) &&
+        Number(limit) > 0
     ) {
         return true;
     } else {
@@ -51,8 +51,8 @@ const checkQueryParams = (req, limitInt) => {
 };
 
 exports.getAll = (req, res) => {
-    const { aboutParam, limitInt, locationFilter } = handleQueryParams(req);
-    if (checkQueryParams(req, limitInt)) {
+    if (checkQueryParams(req)) {
+        const { aboutParam, limitInt, locationFilter } = handleQueryParams(req);
         const queryFilter = aboutParam
             ? { ...locationFilter, about: aboutParam }
             : locationFilter;

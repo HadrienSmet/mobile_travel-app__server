@@ -21,6 +21,7 @@ const tripStepsSchema = mongoose.Schema({
     content: { type: String, required: false },
 });
 const previousTripSchema = mongoose.Schema({
+    color: { type: String, required: false },
     title: { type: String, required: false },
     type: { type: String, required: false },
     withWhom: { type: String, required: false },

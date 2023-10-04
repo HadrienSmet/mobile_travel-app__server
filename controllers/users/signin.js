@@ -21,7 +21,6 @@ exports.signin = (req, res) => {
                     }
                     let resData = { ...user._doc };
                     delete resData.password;
-                    console.log(resData);
                     res.status(200).json({
                         ...resData,
                         token: jwt.sign(
