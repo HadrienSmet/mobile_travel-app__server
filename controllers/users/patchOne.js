@@ -8,29 +8,10 @@ exports.patchOne = (req, res) => {
             } else {
                 UsersModel.updateOne(
                     { _id: req.auth.userId },
-                    {
-                        // $set: {
-                        //     onTravel: req.body.onTravel,
-                        //     travelerType: req.body.travelerType,
-                        //     bio: req.body.bio,
-                        //     purpose: req.body.purpose,
-                        //     languages: req.body.languages,
-                        //     dreamTrips: req.body.dreamTrips,
-                        // },
-                        $set: { ...req.body },
-                    }
+                    { $set: { ...req.body } }
                 )
-                    .then((user) => {
-                        res.status(200).json({
-                            ...user,
-                            ...req.body,
-                            // onTravel: req.body.onTravel,
-                            // travelerType: req.body.travelerType,
-                            // bio: req.body.bio,
-                            // purpose: req.body.purpose,
-                            // languages: req.body.languages,
-                            // dreamTrips: req.body.dreamTrips,
-                        });
+                    .then(() => {
+                        res.status(200).json({ message: "User updated" });
                     })
                     .catch(() =>
                         res.status(400).json({ message: "Error during update" })

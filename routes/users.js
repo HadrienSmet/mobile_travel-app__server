@@ -3,7 +3,6 @@ const router = express.Router();
 const auth = require("../middleware/auth");
 const multer = require("../middleware/multer-config");
 const password = require("../middleware/password");
-// const userCtrl = require("../controllers/user");
 const signupCtrl = require("../controllers/users/signup");
 const signinCtrl = require("../controllers/users/signin");
 const patchOneCtrl = require("../controllers/users/patchOne");
@@ -14,7 +13,7 @@ const checkMailCtrl = require("../controllers/users/checkMail");
 
 router.post("/signup", password, signupCtrl.signup);
 router.post("/signin", signinCtrl.signin);
-router.patch("/users/:id", auth, multer, patchOneCtrl.patchOne);
+router.patch("/users/:id", auth, patchOneCtrl.patchOne);
 router.patch("/users/:id/trip", auth, multer, patchTripCtrl.patchTrip);
 // router.patch(
 //     "/users/:id/setProfilePicture",
